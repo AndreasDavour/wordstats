@@ -7,9 +7,9 @@
       (incf (gethash words table))
       (setf (gethash words table) 1)))
 
-(defun pprint-table (data)
-;;  (describe table)
+(defun pprint-table (data amount)
   (loop :for word :being :each :hash-key :of data
+	:for count from 1 to amount
 	:do (format t "~A: ~A~%" word (gethash word data))))
 		(print word)))
 
@@ -21,4 +21,13 @@
 	  ((null line))
 ;;	(count-words (uiop/utility:split-string line))))
 	(count-words line)))
-    (pprint-table table)))
+    (pprint-table table 5)))
+
+;;; some notes about hash tables
+;;; CL-USER> (alexandria:hash-table-values table)
+;;; (2 2 5 4)
+;;; CL-USER> (alexandria:hash-table-keys table)
+;;; (EKOLOGI EKLESTIASTIKMINSTER EK EKOLLON)
+;;; CL-USER> (alexandria:hash-table-alist table)
+;;; ((EKOLOGI . 2) (EKLESTIASTIKMINSTER . 2) (EK . 5) (EKOLLON . 4))
+
