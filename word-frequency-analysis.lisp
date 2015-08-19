@@ -39,3 +39,18 @@
     (if (>  (cdr (assoc (car x) (alexandria:hash-table-alist table))) biggest)
 	(setf biggest (cdr x))))
   biggest)
+
+;; ((TALL . 2) (BOK . 1) (EK . 5))
+(defun sort-alist (alist)
+  (let ((tmp 0)
+	(newlist)
+	(altlist))
+    (dolist (x alist)
+      (if (> (cdr x) tmp)
+	  (progn
+	    (push x newlist)
+	    (setf tmp (cdr x)))
+	  (progn
+	    (push x altlist)
+	    (setf tmp (cdr x)))))
+    (append newlist altlist)))
