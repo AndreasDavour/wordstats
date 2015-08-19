@@ -1,11 +1,13 @@
 ;;;; Problem: talking a list of words, and producing a list of how common they are
 
+(asdf:load-system "alexandria")
+
 (defparameter wordlist '(ekollon ekollon ek eklestiastikminster ekologi))
 
-(defun count-words (words)
-  (if (nth-value 0 (gethash words table))
-      (incf (gethash words table))
-      (setf (gethash words table) 1)))
+(defun count-words (words the-table)
+  (if (nth-value 0 (gethash words the-table))
+      (incf (gethash words the-table))
+      (setf (gethash words the-table) 1)))
 
 (defun pprint-table (data amount)
   (loop :for word :being :each :hash-key :of data
@@ -20,7 +22,7 @@
 		 (read-line s nil nil)))
 	  ((null line))
 ;;	(count-words (uiop/utility:split-string line))))
-	(count-words line)))
+	(count-words line table)))
     (pprint-table table 5)))
 
 ;;; some notes about hash tables
