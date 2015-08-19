@@ -33,3 +33,9 @@
 ;;; CL-USER> (alexandria:hash-table-alist table)
 ;;; ((EKOLOGI . 2) (EKLESTIASTIKMINSTER . 2) (EK . 5) (EKOLLON . 4))
 
+;; biggest value in a alist
+(let ((biggest 3)) 
+  (dolist (x (alexandria:hash-table-alist table))
+    (if (>  (cdr (assoc (car x) (alexandria:hash-table-alist table))) biggest)
+	(setf biggest (cdr x))))
+  biggest)
