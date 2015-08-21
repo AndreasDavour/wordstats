@@ -54,3 +54,9 @@
 	    (push x altlist)
 	    (setf tmp (cdr x)))))
     (append newlist altlist)))
+
+(defun alist> (p q)
+  (if (> (cdr p) (cdr q))
+      p
+      q))
+
