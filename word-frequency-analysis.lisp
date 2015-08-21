@@ -15,7 +15,8 @@
 	(setf (gethash words keys) 1)
 	(setf (gethash 1 values) words))))
 
-;;; something is wrong with the updating of the reverse hash table, see below
+;;; something is wrong with the updating of the reverse hash table
+;;; se below
 
 ;; (defparameter valuetable (create-frequency-table "/home/ante/src/wordstats/testwords.txt"))
 ;; 
