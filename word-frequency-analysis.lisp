@@ -4,16 +4,24 @@
 
 (defparameter wordlist '(ekollon ekollon ek eklestiastikminster ekologi))
 
+;; gethash key table
 (defun count-words (words keys values)
 ;;  (format t "count-words: words - ~A~%" words)
   (if (nth-value 0 (gethash words keys))
       (progn
-	(incf (gethash words keys))
-	(setf (gethash (+ 1 (gethash words keys)) values)
-	      (gethash words keys)))
+	;;; existing record
+;;;;	(incf (gethash words keys))
+;;;;	(setf (gethash (+ 1 (gethash words keys)) values) (gethash words keys))
+;;;;	(format t "keys:~A values:~A~%" (gethash words keys) (gethash (gethash words keys) values)))
+
+	;(setf (gethash (+ 1 (gethash words keys)) values)
+					;     (gethash words keys)))
+	)
       (progn
+	;; non-existing record
+	(format t "words: ~A~%" words)
 	(setf (gethash words keys) 1)
-	(setf (gethash 1 values) words))))
+	(setf (gethash (gethash words keys) values) words))))
 
 ;;; something is wrong with the updating of the reverse hash table
 ;;; see below
@@ -39,13 +47,14 @@
 
 (defun create-frequency-table (file)
   (let ((key-table (make-hash-table :test #'equal))
-	(value-table (make-hash-table :test #'equal)))
+	(value-table (make-hash-table :test #'eql)))
     (with-open-file (s file :direction :input)
       (do ((line (read-line s nil nil)
 		 (read-line s nil nil)))
 	  ((null line))
 ;;	(count-words (uiop/utility:split-string line))))
 	(count-words line key-table value-table)))
+;;    (return-from create-frequency-table key-table)))
     (return-from create-frequency-table value-table)))
 
     (print key-table)
