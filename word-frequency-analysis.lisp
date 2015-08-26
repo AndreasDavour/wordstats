@@ -4,32 +4,55 @@
 
 (defparameter wordlist '(ekollon ekollon ek eklestiastikminster ekologi))
 
-(defun count-words (words the-table)
-  (if (nth-value 0 (gethash words the-table))
-      (incf (gethash words the-table))
-      (setf (gethash words the-table) 1)))
-
 (defun pprint-table (data amount)
   (loop :for word :being :each :hash-key :of data
 	:for count from 1 to amount
 	:do (format t "~A: ~A~%" word (gethash word data))))
 		(print word)))
 
-(defun create-frequency-table (file)
+;;; In order to sort the tables for backward and forward searching
+;;; we want to build some sublists and lookup lists
+;;;
+;;; (sort (alexandria:hash-table-alist apa) #'> :key #'cdr)
+;;; this is the effect we want to get, a sorted list on values
+
+(defun generate-wordhash (file)
   (let ((table (make-hash-table :test #'equal)))
     (with-open-file (s file :direction :input)
       (do ((line (read-line s nil nil)
 		 (read-line s nil nil)))
 	  ((null line))
-;;	(count-words (uiop/utility:split-string line))))
-	(count-words line table)))
-    (pprint-table table 5)))
+	;;	(count-words (uiop/utility:split-string line))))
+	(if (nth-value 0 (gethash line table))
+	    (incf (gethash line table))
+	    (setf (gethash line table) 1))))
+    table))
 
-;;; some notes about hash tables
-;;; CL-USER> (alexandria:hash-table-values table)
-;;; (2 2 5 4)
-;;; CL-USER> (alexandria:hash-table-keys table)
-;;; (EKOLOGI EKLESTIASTIKMINSTER EK EKOLLON)
-;;; CL-USER> (alexandria:hash-table-alist table)
-;;; ((EKOLOGI . 2) (EKLESTIASTIKMINSTER . 2) (EK . 5) (EKOLLON . 4))
+(defun generate-sorted-keys (table)
+  (sort (loop :for key :being :each :hash-key :of table
+	      :collecting key) #'string-lessp))
 
+(defun generate-matching-values (keys table)
+  (let ((values ))
+    (loop :for key :in keys
+	  :do (push (gethash key table) values))
+    (nreverse values)))
+
+(defun find-max (lst)
+  (let ((tmp 0))
+    (labels ((helper (next tmp)
+	       (cond
+		 ((null next)
+		  nil)
+		 ((>= (car next) tmp)
+		  (progn
+		    (format t "~A ~A~%" (car next) tmp)
+		    (setf tmp (car next))
+		    (helper (cdr next) tmp)))
+		 ((<= (car next) tmp)
+		  (progn
+		    (format t "~A ~A~%" (car next) tmp)
+		  (helper (cdr next) tmp)))
+		 (t (print "this should not happen")))))
+      (helper lst tmp))
+    tmp))
