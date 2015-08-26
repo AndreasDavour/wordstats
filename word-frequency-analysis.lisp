@@ -42,6 +42,7 @@
 
 ;; helper function to sequencially grab the biggest values
 ;; to be used to construct a sorted top list
+;;; test text
 (defun find-max (lst)
   (let ((tmp 0))
     (labels ((helper (next tmp)
