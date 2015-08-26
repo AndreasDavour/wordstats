@@ -28,31 +28,31 @@
 	    (setf (gethash line table) 1))))
     table))
 
+;; helper function to make a top list of values
 (defun generate-sorted-keys (table)
   (sort (loop :for key :being :each :hash-key :of table
 	      :collecting key) #'string-lessp))
 
+;; helper function to get the values from sorted keys
 (defun generate-matching-values (keys table)
   (let ((values ))
     (loop :for key :in keys
 	  :do (push (gethash key table) values))
     (nreverse values)))
 
+;; helper function to sequencially grab the biggest values
 (defun find-max (lst)
   (let ((tmp 0))
     (labels ((helper (next tmp)
 	       (cond
 		 ((null next)
-		  nil)
+		  tmp)
 		 ((>= (car next) tmp)
 		  (progn
-		    (format t "~A ~A~%" (car next) tmp)
 		    (setf tmp (car next))
 		    (helper (cdr next) tmp)))
 		 ((<= (car next) tmp)
 		  (progn
-		    (format t "~A ~A~%" (car next) tmp)
 		  (helper (cdr next) tmp)))
 		 (t (print "this should not happen")))))
-      (helper lst tmp))
-    tmp))
+      (helper lst tmp))))
