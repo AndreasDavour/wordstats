@@ -16,14 +16,17 @@
 ;;; this is the effect we want to get, a sorted list on values
 
 (defun generate-wordhash (file)
-  (let ((table (make-hash-table :test #'equal)))
+  (let ((table (make-hash-table :test #'equal))
+	(word-line))
     (with-open-file (s file :direction :input)
       (do ((line (read-line s nil nil)
 		 (read-line s nil nil)))
 	  ((null line))
-	(if (nth-value 0 (gethash line table))
-	    (incf (gethash line table))
-	    (setf (gethash line table) 1))))
+	(setf word-line (uiop/utility:split-string line))
+	(dolist (w word-line)
+	  (if (nth-value 0 (gethash w table))
+	      (incf (gethash w table))
+	      (setf (gethash w table) 1)))))
     table))
 
 ;; helper function to make a top list of values
