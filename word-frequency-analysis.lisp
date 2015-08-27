@@ -57,3 +57,19 @@
 		  (helper (cdr next) tmp)))
 		 (t (print "this should not happen")))))
       (helper lst tmp))))
+
+;; loop doing this...
+
+(defun generate-top-table (keys vals)
+  (loop :for p :from 1 :to (length vals)
+	:do 
+	   (let* ((max (find-max vals))
+		  (pos (position max vals)))
+	     (format t "key:~A value:~A~%" (nth pos keys) (nth pos vals))
+	     (setf keys (remove (nth pos keys) keys :count 1))
+	     (setf vals (remove (nth pos vals) vals :count 1)))))
+
+;; (defparameter wh (generate-wordhash "/home/ante/src/wordstats/testwords.txt"))
+;; (defparameter keys (generate-sorted-keys wh))
+;; (defparameter vals (generate-matching-values keys wh))
+;; (generate-top-table keys vals)
