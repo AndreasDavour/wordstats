@@ -8,7 +8,6 @@
   (loop :for word :being :each :hash-key :of data
 	:for count from 1 to amount
 	:do (format t "~A: ~A~%" word (gethash word data))))
-		(print word)))
 
 ;;; In order to sort the tables for backward and forward searching
 ;;; we want to build some sublists and lookup lists
@@ -22,7 +21,6 @@
       (do ((line (read-line s nil nil)
 		 (read-line s nil nil)))
 	  ((null line))
-	;;	(count-words (uiop/utility:split-string line))))
 	(if (nth-value 0 (gethash line table))
 	    (incf (gethash line table))
 	    (setf (gethash line table) 1))))
