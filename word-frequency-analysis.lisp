@@ -77,6 +77,17 @@
 	     (setf keys (remove (nth pos keys) keys :count 1))
 	     (setf vals (remove (nth pos vals) vals :count 1)))))
 
+(defun generate-top-table (keys vals)
+  (let ((table ))
+    (loop :for p :from 1 :to (length vals)
+	  :do 
+	     (let* ((max (find-max vals))
+		    (pos (position max vals)))
+	       (push (cons (nth pos keys) (nth pos vals)) table)
+	       (setf keys (remove (nth pos keys) keys :count 1))
+	       (setf vals (remove (nth pos vals) vals :count 1))))
+    (nreverse table)))
+
 (defun tab ()
   (defparameter wh (generate-wordhash "/home/ante/src/wordstats/testwords.txt"))
   (defparameter wh (generate-wordhash "/home/ante/src/wordstats/emma.txt"))
