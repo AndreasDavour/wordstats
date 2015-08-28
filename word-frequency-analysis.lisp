@@ -1,6 +1,7 @@
 ;;;; Problem: talking a list of words, and producing a list of how common they are
 
 (asdf:load-system "alexandria")
+(asdf:load-system "cl-ppcre")
 
 (defparameter wordlist '(ekollon ekollon ek eklestiastikminster ekologi))
 
@@ -22,6 +23,12 @@
       (do ((line (read-line s nil nil)
 		 (read-line s nil nil)))
 	  ((null line))
+;; wash the line from junk so it becomes just the words
+	(setf line (uiop/utility:stripln line))
+ 	(setf line (cl-ppcre:regex-replace-all "--" line " "))
+ 	(setf line (cl-ppcre:regex-replace-all "," line ""))
+ 	(setf line (cl-ppcre:regex-replace-all ";" line ""))
+;; now split the line on white space
 	(setf word-line (uiop/utility:split-string line))
 	(dolist (w word-line)
 	  (if (nth-value 0 (gethash w table))
@@ -70,7 +77,10 @@
 	     (setf keys (remove (nth pos keys) keys :count 1))
 	     (setf vals (remove (nth pos vals) vals :count 1)))))
 
-;; (defparameter wh (generate-wordhash "/home/ante/src/wordstats/testwords.txt"))
-;; (defparameter keys (generate-sorted-keys wh))
-;; (defparameter vals (generate-matching-values keys wh))
-;; (generate-top-table keys vals)
+(defun tab ()
+  (defparameter wh (generate-wordhash "/home/ante/src/wordstats/testwords.txt"))
+  (defparameter wh (generate-wordhash "/home/ante/src/wordstats/emma.txt"))
+(defparameter keys (generate-sorted-keys wh))
+(defparameter vals (generate-matching-values keys wh))
+(generate-top-table keys vals)
+)
