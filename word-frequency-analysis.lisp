@@ -16,6 +16,24 @@
 ;;; (sort (alexandria:hash-table-alist apa) #'> :key #'cdr)
 ;;; this is the effect we want to get, a sorted list on values
 
+
+;;; some strings contain extranous characters, like this one:
+;;; "return!--I shall try for it with a zeal!--It will be the object of"
+;;; this function will wash it clean
+(defun wash-string (str)
+  (let ((len (- (length str) 1))
+	(junk '("-" "?" "!" "," "." ";" ":" "(" ")" "\""))
+	(junkpoints ))
+    (loop :for p :in junk :do
+      (loop :for i :from 0 :to len
+	    :do (if (string= (char str i) p)
+		    (push i junkpoints))))
+    (dolist (x junkpoints)
+      (replace str " " :start1 x :end1 (1+ x)))
+    str))
+    
+
+
 (defun generate-wordhash (file)
   (let ((table (make-hash-table :test #'equal))
 	(word-line))
@@ -25,9 +43,7 @@
 	  ((null line))
 ;; wash the line from junk so it becomes just the words
 	(setf line (uiop/utility:stripln line))
- 	(setf line (cl-ppcre:regex-replace-all "--" line " "))
- 	(setf line (cl-ppcre:regex-replace-all "," line ""))
- 	(setf line (cl-ppcre:regex-replace-all ";" line ""))
+	(wash-string line)
 ;; now split the line on white space
 	(setf word-line (uiop/utility:split-string line))
 	(dolist (w word-line)
@@ -59,7 +75,7 @@
 		 ((>= (car next) tmp)
 		  (progn
 		    (setf tmp (car next))
-		    (helper (cdr next) tmp)))
+ (helper (cdr next) tmp)))
 		 ((<= (car next) tmp)
 		  (progn
 		  (helper (cdr next) tmp)))
