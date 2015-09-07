@@ -1,7 +1,6 @@
 ;;;; Problem: talking a list of words, and producing a list of how common they are
 
 (asdf:load-system "alexandria")
-(asdf:load-system "cl-ppcre")
 
 (defparameter wordlist '(ekollon ekollon ek eklestiastikminster ekologi))
 
